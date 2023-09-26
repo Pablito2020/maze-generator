@@ -1,3 +1,6 @@
+import agent.Agents;
+import board.Maze;
+
 public class Main {
 
     public static int MAX_STEPS_AGENT = 300;

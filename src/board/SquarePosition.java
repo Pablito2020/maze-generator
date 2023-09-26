@@ -1,3 +1,5 @@
+package board;
+
 import java.util.Set;
 
 public enum SquarePosition {

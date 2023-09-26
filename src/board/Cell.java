@@ -1,3 +1,5 @@
+package board;
+
 import java.util.function.Supplier;
 
 public enum Cell implements Supplier<Cell> {

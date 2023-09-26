@@ -1,3 +1,5 @@
+package board;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,7 +30,7 @@ public class Maze {
 
     public Set<Position> addCycle() {
         var positionsCycle = getCycle();
-        positionsCycle.forEach(this::addToPath);
+        positionsCycle.forEach(this::setAsPath);
         return positionsCycle;
     }
 
@@ -74,8 +76,7 @@ public class Maze {
         });
     }
 
-
-    void addToPath(Position position) {
+    public void setAsPath(Position position) {
         if (getCellFrom(position) == Cell.PATH) {
             throw new IllegalArgumentException("The position is already occupied");
         }

@@ -1,3 +1,9 @@
+package agent;
+
+import board.Maze;
+import board.Position;
+import collections.CollectionsHelper;
+
 import java.util.Set;
 import java.util.TreeSet;
 

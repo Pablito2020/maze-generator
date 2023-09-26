@@ -1,3 +1,10 @@
+package agent;
+
+import board.Cell;
+import board.Maze;
+import board.Position;
+import collections.CollectionsHelper;
+
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
@@ -20,7 +27,7 @@ public class Agent {
                 break;
             } else {
                 positionsVisited.add(newPosition.get());
-                maze.addToPath(newPosition.get());
+                maze.setAsPath(newPosition.get());
                 position = newPosition.get();
             }
         }

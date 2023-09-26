@@ -1,3 +1,8 @@
+package agent;
+
+import board.Position;
+import collections.CollectionsHelper;
+
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;

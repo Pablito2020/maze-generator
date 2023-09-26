@@ -1,3 +1,7 @@
+package board;
+
+import board.Position;
+
 import java.util.HashSet;
 import java.util.Set;
 

@@ -1,3 +1,5 @@
+package board;
+
 public record Position(
         int row, int column
 )implements Comparable<Position> {
@@ -10,7 +12,7 @@ public record Position(
         };
     }
 
-    // Comparable implementation for Position
+    // Comparable implementation for board.Position
     @Override
     public int compareTo(Position other) {
         if (row() == other.row())
