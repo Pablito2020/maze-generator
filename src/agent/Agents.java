@@ -17,7 +17,7 @@ public class Agents {
         this.maxSteps = maxSteps;
     }
 
-    public void run(Maze maze, Set<Position> startPositions) {
+    public void walk(Maze maze, Set<Position> startPositions) {
         var poolInitialPositions = new PositionPool(startPositions);
         var positionsVisited = new TreeSet<>(startPositions);
         for (int i = 0; i < numberAgents; i++) {

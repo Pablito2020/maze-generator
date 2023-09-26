@@ -7,8 +7,8 @@ import java.util.stream.Stream;
 
 public class Board {
 
-    private final static int MINIMUM_ROW_SIZE = 3;
-    private final static int MINIMUM_COLUMN_SIZE = 3;
+    public final static int MINIMUM_ROW_SIZE = 3;
+    public final static int MINIMUM_COLUMN_SIZE = 3;
     private final List<List<Cell>> maze;
 
     public Board(int rows, int columns) {
@@ -30,6 +30,7 @@ public class Board {
     public boolean isValid(Position position) {
         return isInsideRow(position) && isInsideColumn(position);
     }
+
     private boolean isInsideRow(Position position) {
         return position.row() >= 0 && position.row() < maze.size();
     }
@@ -45,7 +46,7 @@ public class Board {
     }
 
     public Cell get(Position position) {
-        if(!isValid(position))
+        if (!isValid(position))
             throw new IllegalArgumentException("Position is not valid");
         return maze.get(position.row()).get(position.column());
     }
