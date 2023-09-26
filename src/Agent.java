@@ -1,56 +1,43 @@
 import java.util.Collections;
-import java.util.Random;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class Agent {
 
     private final Maze maze;
-    private final Set<Position> positionsVisited;
-    private Position position;
-    private final int maxSteps;
 
-    public Agent(Maze maze, Set<Position> positionsCycle, int maxSteps) {
+    public Agent(Maze maze) {
         this.maze = maze;
-        this.position = getRandomFrom(positionsCycle);
-        this.positionsVisited = new TreeSet<>(Collections.singleton(position));
-        this.maxSteps = maxSteps;
     }
 
-    private boolean executeStep() {
-        var possibleDirections = maze.getDirectionsFrom(position);
-        if (possibleDirections.isEmpty()) {
-            return false;
+    public Set<Position> run(Position position, Set<Position> visited, int maxSteps) {
+        var positionsVisited = new TreeSet<>(visited);
+        for (int steps = 0; steps < maxSteps; steps++) {
+            var newPosition = getNextPositionFrom(position, visited);
+            if (newPosition.isEmpty()) {
+                break;
+            } else {
+                positionsVisited.add(newPosition.get());
+                maze.addToPath(newPosition.get());
+                position = newPosition.get();
+            }
         }
-
-        var direction = getRandomFrom(possibleDirections);
-        var newPosition = position.applyDirection(direction);
-        if (!maze.positionIs(newPosition, Cell.PATH)) {
-            System.out.println("Position: " + position + " newPosition: " + newPosition);
-            System.out.println("Path!");
-//            return false;
-            addPositionToPath(newPosition);
-        }
-
-        return true;
-    }
-
-    public void addPositionToPath(Position newPosition) {
-        positionsVisited.add(newPosition);
-        maze.setPosition(newPosition, Cell.PATH);
-    }
-
-    public Set<Position> run() {
-        for (int steps = 0; steps < maxSteps; steps++)
-            if (!executeStep()) break;
         return Collections.unmodifiableSet(positionsVisited);
     }
 
+    private Optional<Position> getNextPositionFrom(Position position, Set<Position> visited) {
+        var possiblePositions = getPossibleNextPositionsFrom(position, visited);
+        return possiblePositions.isEmpty() ? Optional.empty() : Optional.of(CollectionsHelper.getRandomFrom(possiblePositions));
+    }
 
-    private <T> T getRandomFrom(Set<T> set) {
-        var rand = new Random();
-        var row = rand.nextInt(0, set.size());
-        return set.stream().toList().get(row);
+    private Set<Position> getPossibleNextPositionsFrom(Position position, Set<Position> positionsVisited) {
+        var directions = maze.getDirectionsFrom(position);
+        return directions.stream()
+                .map(position::applyDirection)
+                .filter(pos -> !positionsVisited.contains(pos) && !maze.positionIs(pos, Cell.PATH))
+                .collect(Collectors.toSet());
     }
 
 }

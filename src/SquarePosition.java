@@ -11,27 +11,27 @@ public enum SquarePosition {
         return switch (this) {
             case TOP_LEFT:
                 yield Set.of(
-                        new Position(position.row() - 1, position.column()),
-                        new Position(position.row(), position.column() - 1),
-                        new Position(position.row() - 1, position.column() - 1)
+                        new Position(position.row(), position.column() + 1),
+                        new Position(position.row() + 1, position.column() + 1),
+                        new Position(position.row() + 1, position.column())
                 );
             case TOP_RIGHT:
                 yield Set.of(
-                        new Position(position.row() - 1, position.column()),
-                        new Position(position.row(), position.column() + 1),
-                        new Position(position.row() - 1, position.column() + 1)
+                        new Position(position.row(), position.column() - 1),
+                        new Position(position.row() + 1, position.column() - 1),
+                        new Position(position.row() +1, position.column())
                 );
             case BOTTOM_LEFT:
                 yield Set.of(
-                        new Position(position.row() + 1, position.column()),
-                        new Position(position.row(), position.column() - 1),
-                        new Position(position.row() + 1, position.column() - 1)
+                        new Position(position.row(), position.column() + 1),
+                        new Position(position.row() - 1, position.column()),
+                        new Position(position.row() - 1, position.column() + 1)
                 );
             case BOTTOM_RIGHT:
                 yield Set.of(
-                        new Position(position.row() + 1, position.column()),
-                        new Position(position.row(), position.column() + 1),
-                        new Position(position.row() + 1, position.column() + 1)
+                        new Position(position.row() - 1, position.column() - 1),
+                        new Position(position.row() - 1, position.column()),
+                        new Position(position.row(), position.column() - 1)
                 );
         };
     }

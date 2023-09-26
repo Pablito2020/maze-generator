@@ -28,7 +28,7 @@ public class Maze {
 
     public Set<Position> addCycle() {
         var positionsCycle = getCycle();
-        positionsCycle.forEach(position -> setPosition(position, Cell.PATH));
+        positionsCycle.forEach(this::addToPath);
         return positionsCycle;
     }
 
@@ -52,7 +52,7 @@ public class Maze {
     }
 
     private boolean isPositionValid(Position position) {
-        return isInsideMaze(position) && !positionIs(position, Cell.WALL) && positionDoesntCreateLoops(position);
+        return isInsideMaze(position) && !createPathSquare(position);
     }
 
     private boolean isInsideMaze(Position position) {
@@ -67,11 +67,19 @@ public class Maze {
         return position.column() >= 0 && position.column() < maze.get(0).size();
     }
 
-    void setPosition(Position position, Cell cell) {
-        if (getCellFrom(position) == Cell.WALL || getCellFrom(position) == Cell.PATH) {
+    private boolean createPathSquare(Position position) {
+        return Arrays.stream(SquarePosition.values()).anyMatch(squarePosition -> {
+            var neighBours = squarePosition.getNeighBours(position);
+            return neighBours.stream().allMatch(neighBour -> isInsideMaze(neighBour) && positionIs(neighBour, Cell.PATH));
+        });
+    }
+
+
+    void addToPath(Position position) {
+        if (getCellFrom(position) == Cell.PATH) {
             throw new IllegalArgumentException("The position is already occupied");
         }
-        maze.get(position.row()).set(position.column(), cell);
+        maze.get(position.row()).set(position.column(), Cell.PATH);
     }
 
     private Cell getCellFrom(Position position) {
@@ -80,13 +88,6 @@ public class Maze {
 
     public boolean positionIs(Position position, Cell cell) {
         return getCellFrom(position) == cell;
-    }
-
-    private boolean positionDoesntCreateLoops(Position position) {
-        return Arrays.stream(SquarePosition.values()).noneMatch(squarePosition -> {
-            var neighBours = squarePosition.getNeighBours(position);
-            return neighBours.stream().allMatch(neighBour -> isInsideMaze(neighBour) && positionIs(neighBour, Cell.PATH));
-        });
     }
 
     public void print() {
