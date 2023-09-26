@@ -4,7 +4,7 @@ import board.Maze;
 
 public class Main {
 
-    private static final int MAX_AGENTS = 3;
+    private static final int MAX_AGENTS = 2;
 
     private static final int MAX_STEPS_AGENT = 300;
     private static final int ROWS = 10;

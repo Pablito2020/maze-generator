@@ -1,6 +1,5 @@
 package agent;
 
-import board.Cell;
 import board.Maze;
 import board.Position;
 import collections.CollectionsHelper;
@@ -19,22 +18,27 @@ public class Agent {
         this.maze = maze;
     }
 
-    public Set<Position> run(Position position, Set<Position> visited, int maxSteps) {
-        var positionsVisited = new TreeSet<>(visited);
-        for (int steps = 0; steps < maxSteps; steps++) {
-            var newPosition = getNextPositionFrom(position, visited);
-            if (newPosition.isEmpty()) {
-                break;
-            } else {
-                positionsVisited.add(newPosition.get());
-                maze.setAsPath(newPosition.get());
-                position = newPosition.get();
-            }
-        }
+    public Set<Position> walkFrom(Position position, Set<Position> walkedPositions, int maxSteps) {
+        var positionsVisited = new TreeSet<>(walkedPositions);
+        walkFrom(position, 0, maxSteps, positionsVisited);
         return Collections.unmodifiableSet(positionsVisited);
     }
 
-    private Optional<Position> getNextPositionFrom(Position position, Set<Position> visited) {
+    // NOTE: Be aware that this method is recursive and it can cause a StackOverflowError, check it on C# limits
+    private void walkFrom(Position position, int numberOfSteps, int maxSteps, Set<Position> walkedPositions) {
+        if (numberOfSteps == maxSteps) return;
+        var nextStep = stepFromPosition(position, walkedPositions);
+        if (nextStep.isEmpty()) return;
+        markAsWalked(nextStep.get(), walkedPositions);
+        walkFrom(nextStep.get(), numberOfSteps + 1, maxSteps, walkedPositions);
+    }
+
+    private void markAsWalked(Position step, Set<Position> walkedPositions) {
+        walkedPositions.add(step);
+        maze.setAsWalked(step);
+    }
+
+    private Optional<Position> stepFromPosition(Position position, Set<Position> visited) {
         var possiblePositions = getPossibleNextPositionsFrom(position, visited);
         return possiblePositions.isEmpty() ? Optional.empty() : Optional.of(CollectionsHelper.getRandomFrom(possiblePositions));
     }

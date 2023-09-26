@@ -29,7 +29,7 @@ public class Maze {
         });
     }
 
-    public void setAsPath(Position position) {
+    public void setAsWalked(Position position) {
         if (board.get(position) == Cell.PATH)
             throw new IllegalArgumentException("The position is already occupied");
         board.set(position, Cell.PATH);

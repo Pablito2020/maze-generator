@@ -23,7 +23,7 @@ public class Agents {
         for (int i = 0; i < numberAgents; i++) {
             var initialPosition = poolInitialPositions.pull().orElse(CollectionsHelper.getRandomFrom(positionsVisited));
             var agent = new Agent(maze);
-            positionsVisited.addAll(agent.run(initialPosition, positionsVisited, maxSteps));
+            positionsVisited.addAll(agent.walkFrom(initialPosition, positionsVisited, maxSteps));
         }
     }
 
