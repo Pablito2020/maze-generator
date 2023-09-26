@@ -43,7 +43,7 @@ public class Agent {
         var directions = maze.getDirectionsFrom(position);
         return directions.stream()
                 .map(position::applyDirection)
-                .filter(pos -> !positionsVisited.contains(pos) && !maze.positionIs(pos, Cell.PATH))
+                .filter(pos -> !positionsVisited.contains(pos) && !maze.positionIsPath(pos))
                 .collect(Collectors.toSet());
     }
 
