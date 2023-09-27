@@ -43,4 +43,10 @@ public class Maze {
         board.print();
     }
 
+    public boolean walkedIsBelowThreshold(float threshold) {
+        var pathCells = board.getAllCells().stream().filter(cell -> cell == Cell.PATH).count();
+        var allCells = board.getSize();
+        return (float) pathCells / allCells < threshold;
+    }
+
 }

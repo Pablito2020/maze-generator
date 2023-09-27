@@ -13,24 +13,29 @@ import java.util.stream.Collectors;
 public class Agent {
 
     private final Maze maze;
+    private final float walkedThreshold;
+    private final int maxSteps;
 
-    public Agent(Maze maze) {
+    public Agent(Maze maze, float walkedThreshold, int maxSteps) {
         this.maze = maze;
+        this.walkedThreshold = walkedThreshold;
+        this.maxSteps = maxSteps;
     }
 
-    public Set<Position> walkFrom(Position position, Set<Position> walkedPositions, int maxSteps) {
+    public Set<Position> walkFrom(Position position, Set<Position> walkedPositions) {
         var positionsVisited = new TreeSet<>(walkedPositions);
-        walkFrom(position, 0, maxSteps, positionsVisited);
+        walkFrom(position, 0, positionsVisited);
         return Collections.unmodifiableSet(positionsVisited);
     }
 
     // NOTE: Be aware that this method is recursive and it can cause a StackOverflowError, check it on C# limits
-    private void walkFrom(Position position, int numberOfSteps, int maxSteps, Set<Position> walkedPositions) {
+    private void walkFrom(Position position, int numberOfSteps, Set<Position> walkedPositions) {
         if (numberOfSteps == maxSteps) return;
+        if(!maze.walkedIsBelowThreshold(walkedThreshold)) return;
         var nextStep = stepFromPosition(position, walkedPositions);
         if (nextStep.isEmpty()) return;
         markAsWalked(nextStep.get(), walkedPositions);
-        walkFrom(nextStep.get(), numberOfSteps + 1, maxSteps, walkedPositions);
+        walkFrom(nextStep.get(), numberOfSteps + 1, walkedPositions);
     }
 
     private void markAsWalked(Position step, Set<Position> walkedPositions) {

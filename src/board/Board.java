@@ -7,9 +7,11 @@ import java.util.stream.Stream;
 
 public class Board {
     private final List<List<Cell>> maze;
+    private final int size;
 
     public Board(int rows, int columns) {
         this.maze = new ArrayList<>();
+        this.size = rows * columns;
         populateMaze(rows, columns);
     }
 
@@ -56,6 +58,13 @@ public class Board {
 
     public int getRows() {
         return maze.size();
+    }
+
+    public List<Cell> getAllCells() {
+        return maze.stream().flatMap(List::stream).collect(Collectors.toList());
+    }
+    public int getSize() {
+        return size;
     }
 
 }

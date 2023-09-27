@@ -12,9 +12,12 @@ public class Agents {
     private final int numberAgents;
     private final int maxSteps;
 
-    public Agents(int numberAgents, int maxSteps) {
+    private final float walkThreshold;
+
+    public Agents(int numberAgents, int maxSteps, float walkThreshold) {
         this.numberAgents = numberAgents;
         this.maxSteps = maxSteps;
+        this.walkThreshold = walkThreshold;
     }
 
     public void walk(Maze maze, Set<Position> startPositions) {
@@ -22,8 +25,8 @@ public class Agents {
         var positionsVisited = new TreeSet<>(startPositions);
         for (int i = 0; i < numberAgents; i++) {
             var initialPosition = poolInitialPositions.pull().orElse(CollectionsHelper.getRandomFrom(positionsVisited));
-            var agent = new Agent(maze);
-            positionsVisited.addAll(agent.walkFrom(initialPosition, positionsVisited, maxSteps));
+            var agent = new Agent(maze, walkThreshold, maxSteps);
+            positionsVisited.addAll(agent.walkFrom(initialPosition, positionsVisited));
         }
     }
 
