@@ -20,4 +20,7 @@ public record Position(
         return row() - other.row();
     }
 
+    public Position plus(Position pos) {
+        return new Position(row() + pos.row(), column() + pos.column());
+    }
 }

@@ -1,34 +1,36 @@
 package board;
 
-import board.Position;
-
-import java.util.HashSet;
 import java.util.Set;
 
 public class Donut {
 
-    private final Position initialPosition;
-    private final int size;
+    private static final int MINIMUM_SIDE_SIZE = 3;
+    static final int MINIMUM_AREA = MINIMUM_SIDE_SIZE * MINIMUM_SIDE_SIZE;
+    private final Rectangle rectangle;
 
-    public Donut(Position initialPosition, int size) {
-        this.initialPosition = initialPosition;
-        this.size = size;
+    public Donut(Rectangle rectangle) {
+        if (rectangle.area() < MINIMUM_AREA)
+            throw new IllegalArgumentException("You are not creating a donut, the donut should have a space in the middle");
+        this.rectangle = rectangle;
     }
 
-    public Set<Position> getPositions() {
-        var set = new HashSet<>(Set.of(initialPosition));
-        // Add everything
-        for (int i = 0; i < size; i++) {
-            for(int j = 0; j < size; j++) {
-                set.add(new Position(initialPosition.row() + i, initialPosition.column() + j));
-            }
-        }
-        // Remove middle positions
-        for (int i = 1; i < size - 1; i++) {
-            for (int j = 1; j < size - 1; j++) {
-                set.remove(new Position(initialPosition.row() + i, initialPosition.column() + j));
-            }
-        }
-        return set;
+    public Set<Position> getPositions(Position initialPosition) {
+        return rectangle.getPositionsFromOrigin().stream()
+                .filter(pos -> !isInsideDonut(pos, rectangle))
+                .map(initialPosition::plus)
+                .collect(java.util.stream.Collectors.toSet());
     }
+
+    private boolean isInsideDonut(Position currentPosition, Rectangle rectangle) {
+        return !firstOrLastRowOf(rectangle, currentPosition) && !firstOrLastColumnOf(rectangle, currentPosition);
+    }
+
+    private boolean firstOrLastColumnOf(Rectangle rectangle, Position currentPosition) {
+        return currentPosition.column() == 0 || currentPosition.column() == rectangle.width() - 1;
+    }
+
+    private boolean firstOrLastRowOf(Rectangle rectangle, Position currentPosition) {
+        return currentPosition.row() == 0 || currentPosition.row() == rectangle.height() - 1;
+    }
+
 }

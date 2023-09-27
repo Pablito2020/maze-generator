@@ -5,36 +5,41 @@ import java.util.Set;
 
 public class Cycle {
 
-    public static Set<Position> apply(int size, Maze maze) {
-        return apply(size, maze.board);
+    public static Set<Position> apply(Rectangle rectangle, Maze maze) {
+        return apply(rectangle, maze.board);
     }
 
-    private static Set<Position> apply(int size, Board board) {
-        if (!isViable(size, board))
+    private static Set<Position> apply(Rectangle rectangle, Board board) {
+        if (!isViable(rectangle, board))
             throw new IllegalArgumentException("Size of cycle is not viable");
-        var cyclePosition = getCycleInitialPosition(size, board);
-        var donut = new Donut(cyclePosition, size);
-        var positions = donut.getPositions();
+        var cyclePosition = getCycleInitialPosition(rectangle, board);
+        var donut = new Donut(rectangle);
+        var positions = donut.getPositions(cyclePosition);
         positions.forEach(pos -> board.set(pos, Cell.PATH));
         return positions;
     }
 
-    private static Position getCycleInitialPosition(int size, Board board) {
-        var maxRowsRandom = board.getRows() - size;
-        var maxColumnsRandom = board.getColumns() - size;
+    private static Position getCycleInitialPosition(Rectangle rectangle, Board board) {
+        var rowsLeft = rowsLeftOverAfterCycle(rectangle, board);
+        var columnsLeft = columnsLeftOverAfterCycle(rectangle, board);
         var rand = new Random();
-        var row = maxRowsRandom > 0 ? rand.nextInt(0, maxRowsRandom) : 0;
-        var column = maxColumnsRandom > 0 ? rand.nextInt(0, maxColumnsRandom) : 0;
+        var row = rowsLeft > 0 ? rand.nextInt(0, rowsLeft) : 0;
+        var column = columnsLeft > 0 ? rand.nextInt(0, columnsLeft) : 0;
         return new Position(row, column);
     }
 
-    public static boolean isViable(int sizeCycle, Maze maze) {
-        return isViable(sizeCycle, maze.board);
+    public static boolean isViable(Rectangle rectangle, Maze maze) {
+        return isViable(rectangle, maze.board);
     }
 
-    public static boolean isViable(int sizeCycle, Board board) {
-        int maxOfCycle = Integer.min(board.getRows(), board.getColumns());
-        return sizeCycle <= maxOfCycle && sizeCycle >= Board.MINIMUM_ROW_SIZE && sizeCycle >= Board.MINIMUM_COLUMN_SIZE;
+    public static boolean isViable(Rectangle rectangle, Board board) {
+        return rowsLeftOverAfterCycle(rectangle, board) >= 0 && columnsLeftOverAfterCycle(rectangle, board) >= 0;
     }
 
+    private static int rowsLeftOverAfterCycle(Rectangle rectangle, Board board) {
+        return board.getRows() - rectangle.height();
+    }
+    private static int columnsLeftOverAfterCycle(Rectangle rectangle, Board board) {
+        return board.getColumns() - rectangle.width();
+    }
 }
