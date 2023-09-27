@@ -8,7 +8,11 @@ public class Donut {
     static final int MINIMUM_AREA = MINIMUM_SIDE_SIZE * MINIMUM_SIDE_SIZE;
     private final Rectangle rectangle;
 
-    public Donut(Rectangle rectangle) {
+    public Donut(int width, int height) {
+        this(new Rectangle(width, height));
+    }
+
+    private Donut(Rectangle rectangle) {
         if (rectangle.area() < MINIMUM_AREA)
             throw new IllegalArgumentException("You are not creating a donut, the donut should have a space in the middle");
         this.rectangle = rectangle;
@@ -19,6 +23,14 @@ public class Donut {
                 .filter(pos -> !isInsideDonut(pos, rectangle))
                 .map(initialPosition::plus)
                 .collect(java.util.stream.Collectors.toSet());
+    }
+
+    public int width() {
+        return rectangle.width();
+    }
+
+    public int height() {
+        return rectangle.height();
     }
 
     private boolean isInsideDonut(Position currentPosition, Rectangle rectangle) {

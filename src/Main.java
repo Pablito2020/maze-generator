@@ -1,7 +1,7 @@
 import agent.Agents;
 import board.Cycle;
+import board.Donut;
 import board.Maze;
-import board.Rectangle;
 
 public class Main {
 
@@ -9,13 +9,14 @@ public class Main {
     private static final int MAX_STEPS_AGENT = 300;
     private static final int ROWS = 10;
     private static final int COLUMNS = 10;
-    private static final int INITIAL_CYCLE_WIDTH = 10;
-    private static final int INITIAL_CYCLE_HEIGHT = 9;
-    private static final Rectangle INITIAL_RECTANGLE = new Rectangle(INITIAL_CYCLE_WIDTH, INITIAL_CYCLE_HEIGHT);
+    private static final int INITIAL_DONUT_WIDTH = 10;
+    private static final int INITIAL_DONUT_HEIGHT = 10;
+
+    private static final Donut DEFAULT_DONUT_SIZE = new Donut(INITIAL_DONUT_WIDTH, INITIAL_DONUT_HEIGHT);
 
     public static void main(String[] args) {
         var maze = new Maze(ROWS, COLUMNS);
-        var initialPositions = Cycle.apply(INITIAL_RECTANGLE, maze);
+        var initialPositions = Cycle.apply(DEFAULT_DONUT_SIZE, maze);
         var agents = new Agents(MAX_AGENTS, MAX_STEPS_AGENT);
         agents.walk(maze, initialPositions);
         maze.print();
