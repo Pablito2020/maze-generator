@@ -14,13 +14,13 @@ public class Donut {
 
     private Donut(Rectangle rectangle) {
         if (rectangle.area() < MINIMUM_AREA)
-            throw new IllegalArgumentException("You are not creating a donut, the donut should have a space in the middle");
+            throw new IllegalArgumentException("You are not creating a donut, the donut should have a hole");
         this.rectangle = rectangle;
     }
 
     public Set<Position> getPositions(Position initialPosition) {
         return rectangle.getPositionsFromOrigin().stream()
-                .filter(pos -> !isInsideDonut(pos, rectangle))
+                .filter(pos -> !isInsideDonutHole(pos, rectangle))
                 .map(initialPosition::plus)
                 .collect(java.util.stream.Collectors.toSet());
     }
@@ -33,7 +33,7 @@ public class Donut {
         return rectangle.height();
     }
 
-    private boolean isInsideDonut(Position currentPosition, Rectangle rectangle) {
+    private boolean isInsideDonutHole(Position currentPosition, Rectangle rectangle) {
         return !firstOrLastRowOf(rectangle, currentPosition) && !firstOrLastColumnOf(rectangle, currentPosition);
     }
 
