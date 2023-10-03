@@ -20,6 +20,11 @@ public record Position(
         return row() - other.row();
     }
 
+    @Override
+    public String toString() {
+        return String.format("(%d, %d)", row(), column());
+    }
+
     public Position plus(Position pos) {
         return new Position(row() + pos.row(), column() + pos.column());
     }

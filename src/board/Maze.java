@@ -39,8 +39,8 @@ public class Maze {
         return board.get(position) == Cell.PATH;
     }
 
-    public void print() {
-        board.print();
+    public Board getBoard() {
+        return this.board.deepCopy();
     }
 
     public boolean walkedIsBelowThreshold(float threshold) {

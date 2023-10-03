@@ -13,6 +13,10 @@ public enum Cell implements Supplier<Cell> {
         };
     }
 
+    public boolean isWalkable() {
+        return this != WALL;
+    }
+
     @Override
     public Cell get() {
         return WALL;
