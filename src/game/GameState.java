@@ -2,29 +2,43 @@ package game;
 
 import board.Board;
 import board.Direction;
-import game.pacman.PacmanDirectionInitializer;
+import board.Position;
+import game.food.FoodSubscriber;
+
 
 public class GameState {
 
-    private final Game game;
-    private Direction currentDirection;
+    private final GameBoard board;
+    private final FoodSubscriber foodEventEmitter;
+    private Position pacmanPosition;
 
-    public GameState(Board board, PacmanDirectionInitializer initializer) {
-         this.game = Game.from(board);
-         this.currentDirection = initializer.getDirectionFromNeighbours(game);
+    public GameState(Board board, Position pacmanPosition, FoodSubscriber foodEventEmitter) {
+        this.board = new GameBoard(board);
+        this.pacmanPosition = pacmanPosition;
+        this.foodEventEmitter = foodEventEmitter;
     }
 
-    public void setDirection(Direction direction) {
-        this.currentDirection = direction;
+    public boolean canApply(Direction direction) {
+        var newPosition = pacmanPosition.applyDirection(direction);
+        return board.isWalkable(newPosition);
     }
 
-    public void move() {
-        if (game.canApply(currentDirection))
-            game.move(currentDirection);
+    public void move(Direction direction) {
+        if (!canApply(direction))
+            throw new IllegalArgumentException("Invalid direction");
+        this.pacmanPosition = pacmanPosition.applyDirection(direction);
+        if (board.hasFruit(pacmanPosition)) {
+            board.eatFruitOn(pacmanPosition);
+            foodEventEmitter.eatFoodOn(pacmanPosition);
+        }
     }
 
-    public void print() {
-        game.print();
+    public boolean hasFinished() {
+        return !board.hasFood();
+    }
+
+    public Position getPacmanPosition() {
+        return this.pacmanPosition;
     }
 
 }

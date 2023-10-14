@@ -3,13 +3,14 @@ package board;
 import java.util.function.Supplier;
 
 public enum Cell implements Supplier<Cell> {
-    WALL, PATH;
+    WALL, FOOD, PATH;
 
     @Override
     public String toString() {
         return switch (this) {
             case WALL -> "#";
             case PATH -> ".";
+            case FOOD -> "*";
         };
     }
 

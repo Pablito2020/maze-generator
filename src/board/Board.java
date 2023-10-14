@@ -44,18 +44,6 @@ public class Board {
         return board.get(position.row()).get(position.column());
     }
 
-    public List<List<Cell>> getPrimitive() {
-        return deepCopy().board;
-    }
-
-    public void print() {
-        board.stream().
-                map(row -> row.stream()
-                        .map(Cell::toString)
-                        .collect(Collectors.joining()))
-                .forEach(System.out::println);
-    }
-
     public Board deepCopy() {
         var newBoard = new Board(board.size(), board.get(0).size());
         for (int i = 0; i < board.size(); i++)

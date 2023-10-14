@@ -3,58 +3,42 @@ package game;
 import board.Board;
 import board.Direction;
 import board.Position;
-
+import game.food.FoodSubscriber;
+import game.initializers.GameBoardCreator;
+import game.initializers.PacmanInitializer;
+import game.initializers.PacmanRandomInitializer;
 
 public class Game {
 
-    private final GameBoard board;
-    private Position pacmanPosition;
+    private final GameState state;
+    private Direction currentDirection;
 
-    public Game(Board board, Position pacmanPosition) {
-        this.board = new GameBoard(board);
-        this.pacmanPosition = pacmanPosition;
+    public Game(Board board, FoodSubscriber foodEventEmitter) {
+        this(board, new PacmanRandomInitializer(), foodEventEmitter);
     }
 
-    private Game(GameBoard board, Position pacmanPosition) {
-        this.board = board;
-        this.pacmanPosition = pacmanPosition;
+    public Game(Board board, PacmanInitializer initializer, FoodSubscriber foodEventEmitter) {
+        var initialPosition = initializer.getInitialPosition(board);
+        var boardWithFood = GameBoardCreator.fillWithFood(board, initialPosition);
+        this.state = new GameState(boardWithFood, initialPosition, foodEventEmitter);
+        this.currentDirection = initializer.getInitialDirection(this.state);
     }
 
-    public static Game from(Board board) {
-        var gameBoard = new GameBoard(board);
-        var initialPosition = gameBoard.getWalkablePositions().stream().findAny().orElseThrow();
-        return new Game(board, initialPosition);
+    public void setDirection(Direction direction) {
+        this.currentDirection = direction;
     }
 
-    public boolean canApply(Direction direction) {
-        var newPosition = pacmanPosition.applyDirection(direction);
-        System.out.println(newPosition);
-        return board.isWalkable(newPosition);
+    public void move() {
+        if (state.canApply(currentDirection))
+            state.move(currentDirection);
     }
 
-    public void move(Direction direction) {
-        if (!canApply(direction))
-            throw new IllegalArgumentException("Invalid direction");
-        this.pacmanPosition = pacmanPosition.applyDirection(direction);
-        if (board.hasFruit(pacmanPosition))
-            board.eatFruitOn(pacmanPosition);
+    public boolean hasFinished() {
+        return state.hasFinished();
     }
 
-    public void print() {
-        var board = this.board.getBoard().getPrimitive();
-        System.out.println(pacmanPosition);
-        StringBuilder b = new StringBuilder();
-        for (int x = 0; x < board.size(); x++) {
-            var column = board.get(x);
-            for (int col = 0; col < column.size(); col++) {
-                if (pacmanPosition.row() == x && pacmanPosition.column() == col)
-                    b.append("P");
-                else
-                    b.append(column.get(col).toString());
-            }
-            b.append("\n");
-        }
-        System.out.println(b);
+    public Position getPacmanPosition() {
+        return state.getPacmanPosition();
     }
 
 }
